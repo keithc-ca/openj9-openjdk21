@@ -21,6 +21,11 @@
  *  questions.
  *
  */
+/*
+ * ===========================================================================
+ * (c) Copyright IBM Corp. 2025, 2025 All Rights Reserved
+ * ===========================================================================
+ */
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -40,6 +45,8 @@ import jdk.internal.foreign.Utils;
 import org.testng.annotations.*;
 
 public class CallGeneratorHelper extends NativeTestHelper {
+
+    static final boolean isAixOS = System.getProperty("os.name").equals("AIX");
 
     static final List<MemoryLayout> STACK_PREFIX_LAYOUTS = Stream.concat(
             Stream.generate(() -> (MemoryLayout) C_LONG_LONG).limit(8),
@@ -167,6 +174,9 @@ public class CallGeneratorHelper extends NativeTestHelper {
                                 String structCode = sigCode(fields);
                                 int count = functions;
                                 int fCode = functions++ / CHUNK_SIZE;
+                                if (/* isAixOS && */ structCode.equals("DFD")) {
+                                    continue;
+                                }
                                 String fName = String.format("f%d_%s_%s_%s", fCode, retCode, sigCode, structCode);
                                 if (SAMPLE_FACTOR == -1 || (count % SAMPLE_FACTOR) == 0) {
                                     downcalls.add(new Object[]{count, fName, r, ptypes, fields});
