@@ -25,7 +25,7 @@
 
 /*
  * ===========================================================================
- * (c) Copyright IBM Corp. 2024, 2024 All Rights Reserved
+ * (c) Copyright IBM Corp. 2024, 2026 All Rights Reserved
  * ===========================================================================
  */
 package sun.security.ssl;
@@ -757,6 +757,10 @@ enum NamedGroup {
         static final String[] namedGroups;
 
         static {
+            // RestrictedSecurity must be given an opportunity to set
+            // jdk.tls.namedGroups based on the selected profile, if applicable.
+            NamedGroup.SECP256_R1.ordinal();
+
             // The value of the System Property defines a list of enabled named
             // groups in preference order, separated with comma.  For example:
             //
